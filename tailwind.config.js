@@ -10,12 +10,12 @@ module.exports = {
       colors: {
         background: '#0F0F0F',
         foreground: '#FCFCFC',
-        primary: '#0066FF',
-        secondary: '#4D94FF',
-        accent: '#FF3366',
-        darkGray: '#1E1E1E',
-        mediumGray: '#2D2D2D',
-        lightGray: '#ABABAB',
+        primary: 'rgb(0, 102, 255)',
+        secondary: 'rgb(77, 148, 255)',
+        accent: 'rgb(255, 51, 102)',
+        darkGray: 'rgb(30, 30, 30)',
+        mediumGray: 'rgb(45, 45, 45)',
+        lightGray: 'rgb(171, 171, 171)',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -23,4 +23,19 @@ module.exports = {
     },
   },
   plugins: [],
+  safelist: [
+    'text-primary',
+    'text-secondary',
+    'text-accent',
+    'text-lightGray',
+    'bg-primary',
+    'bg-secondary', 
+    'bg-accent',
+    'bg-darkGray',
+    'bg-mediumGray',
+    'bg-lightGray',
+    'border-primary',
+    'border-secondary',
+    'border-accent'
+  ]
 }
