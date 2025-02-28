@@ -4,6 +4,12 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  // Add this to help with CSS loading issues
+  optimizeFonts: false,
+  // Make sure any CSS modules get processed correctly
+  webpack(config) {
+    return config;
+  },
 }
 
 module.exports = nextConfig
