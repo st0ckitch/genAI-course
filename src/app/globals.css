@@ -1,8 +1,10 @@
+/* Import fonts first, before Tailwind */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+/* Then include Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
 
 :root {
   --foreground-rgb: 252, 252, 252;
@@ -13,6 +15,14 @@
   --dark-gray-rgb: 30, 30, 30;
   --medium-gray-rgb: 45, 45, 45;
   --light-gray-rgb: 171, 171, 171;
+}
+
+@layer base {
+  body {
+    color: rgb(var(--foreground-rgb));
+    background: rgb(var(--background-rgb));
+    font-family: 'Inter', sans-serif;
+  }
 }
 
 * {
@@ -26,12 +36,6 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   scroll-behavior: smooth;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  font-family: 'Inter', sans-serif;
 }
 
 a {
