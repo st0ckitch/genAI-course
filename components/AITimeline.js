@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import AITimelineSVG from './AITimelineSVG';
 
 const TimelineItem = ({ year, title, description, index }) => {
   return (
@@ -63,7 +64,8 @@ const AITimeline = () => {
 
   return (
     <div className="py-4">
-      <div className="space-y-2">
+      <AITimelineSVG />
+      <div className="space-y-2 mt-12">
         {timelineData.map((item, index) => (
           <TimelineItem 
             key={index} 
