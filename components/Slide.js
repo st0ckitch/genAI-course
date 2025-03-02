@@ -177,7 +177,7 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
       style={backgroundStyle}
     >
       <motion.div
-        className="max-w-6xl mx-auto w-full"
+        className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh]"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
