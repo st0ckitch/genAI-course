@@ -2,9 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SyntaxHighlighter } from 'react-syntax-highlighter';
 import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import ComponentResolver from './ComponentResolver';
 
 const Slide = ({ content, slideNumber, totalSlides }) => {
-  const { title, subtitle, content: slideContent, notes, background, type, codeBlock } = content;
+  const { title, subtitle, content: slideContent, notes, background, type, codeBlock, component } = content;
 
   // Animation variants for slide elements
   const containerVariants = {
@@ -27,6 +28,18 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
   };
 
   const renderSlideContent = () => {
+    // If there's a component specified, render that component
+    if (component) {
+      return (
+        <motion.div
+          variants={itemVariants}
+          className="w-full"
+        >
+          <ComponentResolver componentName={component} />
+        </motion.div>
+      );
+    }
+    
     if (type === 'code' && codeBlock) {
       return (
         <div className="w-full overflow-hidden rounded-lg">
@@ -182,6 +195,34 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
           <motion.h2 
             variants={itemVariants}
             className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300"
+          >
+            {subtitle}
+          </motion.h2>
+        )}
+        
+        <motion.div 
+          variants={containerVariants}
+          className="slide-body"
+        >
+          {renderSlideContent()}
+        </motion.div>
+      </motion.div>
+      
+      {notes && (
+        <div className="presenter-notes">
+          <h3 className="text-sm font-semibold mb-2">პრეზენტატორის შენიშვნები:</h3>
+          <div className="text-sm">{notes}</div>
+        </div>
+      )}
+      
+      <div className="absolute bottom-4 left-4 text-sm text-gray-500 dark:text-gray-400">
+        {slideNumber} / {totalSlides}
+      </div>
+    </div>
+  );
+};
+
+export default Slide;text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300"
           >
             {subtitle}
           </motion.h2>
