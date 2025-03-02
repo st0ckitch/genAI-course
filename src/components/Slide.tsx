@@ -9,11 +9,15 @@ interface SlideProps {
 
 const Slide: React.FC<SlideProps> = ({ id, children, number }) => {
   return (
-    <section id={id} className="slide-container flex items-center justify-center px-8 md:px-16">
+    <section 
+      id={id} 
+      className="slide-container flex items-center justify-center px-8 md:px-16"
+      style={{ opacity: 1, visibility: 'visible' }}
+    >
       <div className="geometric-shape shape-circle w-[500px] h-[500px] top-[-150px] right-[-200px]"></div>
       <div className="geometric-shape w-[400px] h-[400px] bottom-[-100px] left-[-150px] transform rotate-45"></div>
       
-      <div className="relative z-10 max-w-7xl w-full">
+      <div className="relative z-10 max-w-7xl w-full" style={{ opacity: 1, visibility: 'visible' }}>
         {children}
       </div>
       
