@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiArrowRight, FiArrowLeft, FiMaximize, FiMenu } from 'react-icons/fi';
 import Slide from './Slide';
+import ThemeSwitch from './ThemeSwitch';
 import { slides } from '../data/slides';
 
 const Presentation = () => {
