@@ -1,109 +1,135 @@
 export const slides = [
   // Title Slide
   {
-    title: "LLM Models Fundamentals",
-    subtitle: "Module 1: Understanding the Foundation of Modern AI",
-    content: [
-      { 
-        type: "image", 
-        src: "/images/llm-banner.jpg", 
-        alt: "AI Neural Networks Visualization",
-        className: "rounded-lg shadow-lg" 
-      }
-    ],
+    title: "LLM მოდელების საფუძვლები",
+    subtitle: "მოდული 1: თანამედროვე AI-ის საფუძვლების გაცნობა",
     background: {
       gradient: "linear-gradient(135deg, #0369a1 0%, #075985 100%)"
     },
-    notes: "Welcome to Module 1 of our LLM training series. Today we'll explore the fundamentals of Large Language Models, their history, types, and how to effectively work with them."
+    notes: "მოგესალმებით LLM ტრენინგის პირველ მოდულში. დღეს ჩვენ შევისწავლით დიდი ენობრივი მოდელების საფუძვლებს, მათ ისტორიას, ტიპებს და როგორ ვიმუშაოთ მათთან ეფექტურად."
   },
   
   // Agenda Slide
   {
-    title: "What We'll Cover",
+    title: "რას განვიხილავთ",
     content: [
       {
         type: "numbered-list",
         items: [
-          "Brief History of AI Development",
-          "Types of LLM Models and Their Capabilities",
-          "Overview of Leading Models (GPT, Claude, Llama, Gemini)",
-          "Comparative Analysis of Models",
-          "The Art of Prompt Engineering",
-          "Role Assignment and Effective Communication",
-          "Practical Exercises and Applications"
+          "AI განვითარების მოკლე ისტორია",
+          "LLM მოდელების ტიპები და მათი შესაძლებლობები",
+          "წამყვანი მოდელების მიმოხილვა (GPT, Claude, Llama, Gemini)",
+          "მოდელების შედარებითი ანალიზი",
+          "პრომფტების შექმნის ხელოვნება (prompt engineering)",
+          "LLM-ისთვის როლის მინიჭება და ეფექტური კომუნიკაცია",
+          "პრაქტიკული სავარჯიშოები და აპლიკაციები"
         ]
       }
     ],
-    notes: "We have a packed 3-hour session today. We'll start with the history and evolution of AI, explore different LLM architectures, compare leading models, and then dive into practical techniques for working with these models."
+    notes: "დღეს გვაქვს 3-საათიანი ინტენსიური სესია. დავიწყებთ AI-ის ისტორიითა და ევოლუციით, შევისწავლით სხვადასხვა LLM არქიტექტურას, შევადარებთ წამყვან მოდელებს და შემდეგ გადავალთ პრაქტიკულ ტექნიკებზე ამ მოდელებთან სამუშაოდ."
   },
   
   // Section 1 Intro
   {
-    title: "Overview of Modern LLM Models",
-    subtitle: "From Rules to Neural Networks to Transformers",
+    title: "თანამედროვე LLM მოდელების მიმოხილვა",
+    subtitle: "წესებიდან ნეირონულ ქსელებამდე და ტრანსფორმერებამდე",
     content: [
-      "In this section, we'll explore the evolution of AI systems that led to today's powerful LLMs.",
+      "ამ ნაწილში გამოვიკვლევთ AI სისტემების ევოლუციას, რომელმაც დღევანდელ მძლავრ LLM-ებამდე მიგვიყვანა.",
       {
         type: "list",
         items: [
-          "The journey from rule-based systems to statistical learning",
-          "How neural networks revolutionized natural language processing",
-          "The transformer architecture breakthrough",
-          "Scaling laws and emergent capabilities"
+          "გზა წესებზე დაფუძნებული სისტემებიდან სტატისტიკურ სწავლებამდე",
+          "როგორ შეცვალა ნეირონულმა ქსელებმა ბუნებრივი ენის დამუშავება",
+          "ტრანსფორმერის არქიტექტურის გარღვევა",
+          "მასშტაბირების კანონები და ახალი შესაძლებლობების გაჩენა"
         ]
       }
     ],
     background: {
       color: "#f8fafc"
     },
-    notes: "This section lays the groundwork for understanding how we arrived at current LLM technology. The evolution from rules to statistics to deep learning to transformers represents a series of paradigm shifts in AI."
+    notes: "ეს ნაწილი ქმნის საფუძველს იმის გასაგებად, თუ როგორ მივედით დღევანდელ LLM ტექნოლოგიამდე. ევოლუცია წესებიდან სტატისტიკამდე, ღრმა სწავლებამდე და ტრანსფორმერებამდე წარმოადგენს პარადიგმების ცვლილებათა სერიას AI-ში."
   },
   
   // History Timeline
   {
-    title: "Brief History of AI Development",
+    title: "AI განვითარების მოკლე ისტორია",
     content: [
-      {
-        type: "image",
-        src: "/images/ai-timeline.jpg",
-        alt: "AI Development Timeline",
-        caption: "Key milestones in the evolution of AI leading to modern LLMs"
-      },
+      "მნიშვნელოვანი ეტაპები AI-ის ევოლუციაში, რომელმაც თანამედროვე LLM-ებამდე მიგვიყვანა",
       {
         type: "list",
         items: [
-          "1950s-1980s: Rule-based systems and symbolic AI",
-          "1990s-2000s: Statistical models and early neural networks",
-          "2010-2015: Deep learning revolution with CNNs and RNNs",
-          "2017: Transformer architecture (Attention is All You Need)",
-          "2018-Present: Scaling of transformer models (GPT series, etc.)"
+          "1950-1980-იანი: წესებზე დაფუძნებული სისტემები და სიმბოლური AI",
+          "1990-2000-იანი: სტატისტიკური მოდელები და ადრეული ნეირონული ქსელები",
+          "2010-2015: ღრმა სწავლების რევოლუცია CNN-ებითა და RNN-ებით",
+          "2017: ტრანსფორმერის არქიტექტურა (Attention is All You Need)",
+          "2018-დღემდე: ტრანსფორმერული მოდელების მასშტაბირება (GPT სერია და სხვ.)"
         ]
       }
     ],
-    notes: "The history of AI has been marked by several waves of innovation and periods of 'AI winter.' The current wave, powered by deep learning and transformers, has proven remarkably durable and productive."
+    notes: "AI-ის ისტორია აღნიშნულია ინოვაციის რამდენიმე ტალღითა და 'AI ზამთრის' პერიოდებით. ამჟამინდელი ტალღა, რომელსაც საფუძვლად უდევს ღრმა სწავლება და ტრანსფორმერები, აღმოჩნდა შესამჩნევად მდგრადი და ნაყოფიერი."
   },
   
   // Early AI History
   {
-    title: "Early AI Research (1950s-1980s)",
+    title: "ადრეული AI კვლევა (1950-1980-იანი)",
     content: [
-      "The early decades of AI were dominated by symbolic approaches and expert systems.",
+      "AI-ის ადრეულ ათწლეულებში დომინირებდა სიმბოლური მიდგომები და ექსპერტული სისტემები.",
       {
         type: "list",
         items: [
-          "1950: Alan Turing proposes the Turing Test",
-          "1956: Dartmouth Conference coins the term 'Artificial Intelligence'",
-          "1960s: ELIZA chatbot simulates conversation using pattern matching",
-          "1970s: Expert systems attempt to encode human knowledge as rules",
-          "1980s: AI winter due to limitations of rule-based approaches"
+          "1950: ალან ტიურინგი გვთავაზობს ტიურინგის ტესტს",
+          "1956: დართმუთის კონფერენციაზე იქმნება ტერმინი 'ხელოვნური ინტელექტი'",
+          "1960-იანი: ELIZA ჩატბოტი იმიტირებს საუბარს პატერნების შესაბამისობის გამოყენებით",
+          "1970-იანი: ექსპერტული სისტემები ცდილობენ ადამიანის ცოდნის წესებად კოდირებას",
+          "1980-იანი: AI ზამთარი წესებზე დაფუძნებული მიდგომების შეზღუდვების გამო"
         ]
       },
       {
         type: "quote",
-        text: "Machines will be capable, within twenty years, of doing any work a man can do.",
-        author: "Herbert Simon, 1965"
+        text: "მანქანები შეძლებენ, ოცი წლის განმავლობაში, შეასრულონ ნებისმიერი სამუშაო, რასაც ადამიანი აკეთებს.",
+        author: "ჰერბერტ საიმონი, 1965"
       }
     ],
-    notes: "Early AI was optimistic but ultimately limited by the rule-based approach and computing constraints. The quote from Herbert Simon demonstrates the recurring pattern of over-optimism in AI timeline predictions."
+    notes: "ადრეული AI ოპტიმისტური იყო, მაგრამ საბოლოოდ შეზღუდულია წესებზე დაფუძნებული მიდგომითა და გამოთვლითი შეზღუდვებით. ჰერბერტ საიმონის ციტატა აჩვენებს AI-ის ვადების პროგნოზებში ზედმეტი ოპტიმიზმის განმეორებად ნიმუშს."
+  },
+  
+  // Neural Network Revolution
+  {
+    title: "ნეირონული ქსელების რევოლუცია",
+    content: [
+      "2010-იანი წლების დასაწყისში, ღრმა სწავლებამ რევოლუცია მოახდინა AI-ის სფეროში.",
+      {
+        type: "list",
+        items: [
+          "2012: AlexNet - გარღვევა კომპიუტერულ მხედველობაში CNN-ით",
+          "2014: GAN-ები (Generative Adversarial Networks) - იანის განვითარება",
+          "2014-2016: RNN და LSTM მოდელები ტექსტისა და აუდიოსთვის",
+          "2015-2016: Word2Vec და GloVe ემბედინგები NLP-სთვის",
+          "2016: Google-ის Neural Machine Translation სისტემა"
+        ]
+      }
+    ],
+    notes: "ღრმა სწავლების რევოლუციის განმავლობაში ჩვენ ვნახეთ უზარმაზარი პროგრესი ხელოვნური ნეირონული ქსელების გამოყენებით, განსაკუთრებით კონვოლუციური და რეკურენტული ქსელებით, რამაც განაპირობა მნიშვნელოვანი გაუმჯობესებები კომპიუტერულ მხედველობასა და ენის დამუშავებაში."
+  },
+  
+  // Transformer Architecture
+  {
+    title: "ტრანსფორმერის არქიტექტურა",
+    subtitle: "AI-ში რევოლუციის მომტანი ინოვაცია",
+    content: [
+      "2017 წელს Google-ის მკვლევარებმა წარმოადგინეს ნაშრომი 'Attention is All You Need', რომელიც გახდა LLM-ების განვითარების საფუძველი.",
+      {
+        type: "list",
+        items: [
+          "ყურადღების (Attention) მექანიზმი: ენის გრძელვადიანი დამოკიდებულებების დამუშავება",
+          "პარალელური გამოთვლები: მნიშვნელოვნად აჩქარებს ტრენინგს",
+          "თვითყურადღება (Self-attention): მნიშვნელოვნად აუმჯობესებს კონტექსტის გაგებას",
+          "ტრანსფორმერის არქიტექტურის ბლოკები: ენკოდერები და დეკოდერები",
+          "გამოყენებები: მანქანური თარგმანი, ტექსტის გენერაცია, კლასიფიკაცია"
+        ]
+      }
+    ],
+    notes: "ტრანსფორმერის არქიტექტურამ გადაჭრა ენის მოდელირების ორი ძირითადი პრობლემა: გრძელი კონტექსტის დამუშავება და პარალელიზაცია. ეს მიდგომა გახდა თანამედროვე LLM-ების საფუძველი."
   }
 ];
