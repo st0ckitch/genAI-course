@@ -19,9 +19,11 @@
 
 @layer base {
   body {
-    color: rgb(var(--foreground-rgb));
-    background: rgb(var(--background-rgb));
+    color: rgb(var(--foreground-rgb)) !important;
+    background: rgb(var(--background-rgb)) !important;
     font-family: 'Inter', sans-serif;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 
@@ -36,6 +38,8 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 a {
@@ -60,10 +64,17 @@ a {
 }
 
 .slide-container {
+  min-height: 100vh;
   height: 100vh;
   scroll-snap-align: start;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  z-index: 10;
 }
 
 /* Make scrollbar invisible but functional */
@@ -82,4 +93,59 @@ a {
 
 .shape-circle {
   border-radius: 50%;
+}
+
+/* Ensure animations don't hide content */
+.animations-enabled {
+  visibility: visible;
+  opacity: 1;
+}
+
+.animations-disabled {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.animations-disabled * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Improve slide visibility */
+.slide-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure text is visible against the dark background */
+h1, h2, h3, h4, h5, h6, p, li, td, th {
+  color: rgb(var(--foreground-rgb));
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.text-primary {
+  color: rgb(var(--primary-rgb));
+}
+
+.text-lightGray {
+  color: rgb(var(--light-gray-rgb));
+}
+
+/* Force visibility for animated components */
+[class*="Animated"] {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure elements in slide components are visible */
+.slide-container > div {
+  position: relative;
+  z-index: 10;
+  width: 100%;
 }
