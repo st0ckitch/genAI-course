@@ -10,6 +10,7 @@ const PromptExample = ({ title, badPrompt, goodPrompt, explanation }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      layout // Add layout animation to adjust container size smoothly
     >
       <div 
         className="p-4 bg-primary-100 dark:bg-primary-900 flex justify-between items-center cursor-pointer"
@@ -22,7 +23,12 @@ const PromptExample = ({ title, badPrompt, goodPrompt, explanation }) => {
       </div>
       
       {isExpanded && (
-        <div className="p-4">
+        <motion.div 
+          className="p-4"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+        >
           <div className="mb-4">
             <h4 className="text-red-600 dark:text-red-400 font-medium mb-2">არაეფექტური პრომფტი:</h4>
             <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800">
@@ -41,7 +47,7 @@ const PromptExample = ({ title, badPrompt, goodPrompt, explanation }) => {
             <h4 className="text-gray-700 dark:text-gray-300 font-medium mb-2">განმარტება:</h4>
             <p className="text-sm">{explanation}</p>
           </div>
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );
@@ -82,7 +88,7 @@ const PromptEngineering = () => {
   ];
 
   return (
-    <div className="py-4">
+    <div className="py-4 max-h-[70vh] overflow-y-auto pr-2">
       <h2 className="text-2xl font-bold mb-6 text-center">პრომფტ ინჟინერიის ტექნიკები</h2>
       <div className="space-y-2">
         {promptExamples.map((example, index) => (
