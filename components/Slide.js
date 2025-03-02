@@ -222,32 +222,4 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
   );
 };
 
-export default Slide;text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300"
-          >
-            {subtitle}
-          </motion.h2>
-        )}
-        
-        <motion.div 
-          variants={containerVariants}
-          className="slide-body"
-        >
-          {renderSlideContent()}
-        </motion.div>
-      </motion.div>
-      
-      {notes && (
-        <div className="presenter-notes">
-          <h3 className="text-sm font-semibold mb-2">Presenter Notes:</h3>
-          <div className="text-sm">{notes}</div>
-        </div>
-      )}
-      
-      <div className="absolute bottom-4 left-4 text-sm text-gray-500 dark:text-gray-400">
-        {slideNumber} / {totalSlides}
-      </div>
-    </div>
-  );
-};
-
 export default Slide;
