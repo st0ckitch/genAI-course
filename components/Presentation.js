@@ -4,15 +4,25 @@ import { FiArrowRight, FiArrowLeft, FiMaximize, FiMenu } from 'react-icons/fi';
 import Slide from './Slide';
 import ThemeSwitch from './ThemeSwitch';
 import KeyboardControls from './KeyboardControls';
+import ModuleSelector from './ModuleSelector';
 import { slides } from '../data/slides';
+import { module2Slides } from '../data/module2-slides';
 
 const Presentation = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPresenterMode, setIsPresenterMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentModule, setCurrentModule] = useState(1);
   
-  const totalSlides = slides.length;
+  // Get the slides for the current module
+  const currentSlides = currentModule === 1 ? slides : module2Slides;
+  const totalSlides = currentSlides.length;
+
+  // Reset slide index when changing modules
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [currentModule]);
 
   const nextSlide = useCallback(() => {
     if (currentSlide < totalSlides - 1) {
@@ -51,6 +61,10 @@ const Presentation = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+  
+  const handleModuleChange = (moduleId) => {
+    setCurrentModule(moduleId);
   };
 
   useEffect(() => {
