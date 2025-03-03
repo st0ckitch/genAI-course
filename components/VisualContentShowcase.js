@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 
 const examplePrompt = `მაღალი ხარისხის, ფოტორეალისტური გამოსახულება თბილისის ძველი ქალაქის ხედით, მტკვრის სანაპიროდან, მზის ჩასვლის დროს, ნარინჯისფერი ცის ფონზე, წინა პლანზე ადამიანები სეირნობენ.`;
 
-const ExampleCard = ({ title, description, prompt, imageSrc, toolName, index }) => {
+const ExampleCard = ({ title, description, prompt, imageSrc, toolName, sampleImages, index, useCases }) => {
   const [showPrompt, setShowPrompt] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   
   return (
     <motion.div 
@@ -14,16 +15,34 @@ const ExampleCard = ({ title, description, prompt, imageSrc, toolName, index }) 
       transition={{ duration: 0.5, delay: index * 0.2 }}
     >
       <div className="relative aspect-video bg-gray-200 dark:bg-gray-700">
-        {/* We're using a placeholder since we don't have actual generated images */}
-        <div className="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
-          {/* For demo purposes, we'll use a colored div instead of an actual image */}
+        {/* Image showcase */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* For demo purposes, we'll use colored divs instead of actual images */}
           <div 
             className="w-full h-full bg-gradient-to-br from-indigo-300 to-purple-400 flex items-center justify-center"
-            style={{ backgroundImage: `url('/api/placeholder/600/400')` }}
+            style={{ 
+              backgroundImage: `url('/api/placeholder/600/400')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
           >
-            <span className="px-3 py-1 bg-black/50 text-white rounded">{toolName} მიერ გენერირებული გამოსახულება</span>
+            <span className="px-3 py-1 bg-black/50 text-white rounded">{toolName} მიერ გენერირებული</span>
           </div>
         </div>
+        
+        {/* Image navigation dots */}
+        {sampleImages && sampleImages.length > 1 && (
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+            {sampleImages.map((_, i) => (
+              <button 
+                key={i}
+                className={`w-2 h-2 rounded-full ${i === activeImage ? 'bg-white' : 'bg-white/50'}`}
+                onClick={() => setActiveImage(i)}
+                aria-label={`Image ${i+1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
       
       <div className="p-4">
@@ -37,6 +56,19 @@ const ExampleCard = ({ title, description, prompt, imageSrc, toolName, index }) 
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
           {description}
         </p>
+        
+        {useCases && (
+          <div className="mb-3">
+            <h4 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">გამოყენების შემთხვევები</h4>
+            <div className="flex flex-wrap gap-1">
+              {useCases.map((useCase, i) => (
+                <span key={i} className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded">
+                  {useCase}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
         
         <button
           onClick={() => setShowPrompt(!showPrompt)}
@@ -67,42 +99,88 @@ const ExampleCard = ({ title, description, prompt, imageSrc, toolName, index }) 
   );
 };
 
-const VisualContentShowcase = () => {
+const PromptingTips = () => {
+  return (
+    <motion.div
+      className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-6 border border-blue-200 dark:border-blue-800"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+    >
+      <h3 className="font-bold text-lg text-blue-800 dark:text-blue-300 mb-2">სურათების გენერაციის პრომფტების რჩევები</h3>
+      <ul className="list-disc list-inside space-y-2 text-blue-700 dark:text-blue-300 text-sm">
+        <li>იყავით <strong>დეტალური და კონკრეტული</strong> - მიუთითეთ სცენა, სტილი, ფერები, განათება</li>
+        <li>გამოიყენეთ <strong>მხატვრობის მიმდინარეობები</strong> (რეალიზმი, იმპრესიონიზმი, სიურეალიზმი)</li>
+        <li>მიუთითეთ <strong>ტექნიკური დეტალები</strong> - გარჩევადობა, თანაფარდობა, ფოკუსი</li>
+        <li>განსაზღვრეთ <strong>კომპოზიცია</strong> - წინა, შუა და უკანა პლანები</li>
+        <li><strong>ექსპერიმენტი მოახდინეთ</strong> სხვადასხვა პრომფტებით და შეადარეთ შედეგები</li>
+      </ul>
+    </motion.div>
+  );
+};
+
+const EnhancedVisualContentShowcase = () => {
   const examples = [
     {
       title: "ურბანული პეიზაჟი",
       description: "თბილისის ხედი, რომელიც აჩვენებს ქალაქის ტრადიციულ და თანამედროვე არქიტექტურის ნაზავს.",
       prompt: examplePrompt,
-      toolName: "DALL-E 3"
+      toolName: "DALL-E 3",
+      sampleImages: [1, 2, 3], // Placeholder for multiple samples
+      useCases: ["ტურიზმი", "ვებგვერდი", "ბროშურა", "სოციალური მედია"]
     },
     {
       title: "პროდუქტის ვიზუალიზაცია",
       description: "კოსმეტიკური პროდუქტის 3D რენდერი, ბრენდირებით და ფოტორეალისტური დეტალებით.",
       prompt: "ფოტორეალისტური კოსმეტიკური კრემის ბოთლი, მინიმალისტური დიზაინით, თეთრი ფონი, სტუდიური განათება, მარკეტინგული გამოსახულება.",
-      toolName: "Midjourney"
+      toolName: "Midjourney",
+      sampleImages: [1, 2], // Placeholder for multiple samples
+      useCases: ["ელ-კომერცია", "რეკლამა", "ბრენდინგი", "პროდუქტის პროტოტიპი"]
     },
     {
       title: "მარკეტინგული ბანერი",
       description: "სოციალური მედიის ბანერი ახალი პროდუქტის გამოშვებისთვის, კორპორატიული სტილით.",
       prompt: "სოციალური მედიის ბანერი ახალი სმარტფონის გამოშვებისთვის, მინიმალისტური დიზაინი, ლურჯი და თეთრი ფერები, პროდუქტი ცენტრში, ტექსტისთვის ადგილით.",
-      toolName: "Canva AI"
+      toolName: "Canva AI",
+      sampleImages: [1, 2, 3, 4], // Placeholder for multiple samples
+      useCases: ["Facebook", "LinkedIn", "ვებსაიტი", "Email"]
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {examples.map((example, index) => (
-        <ExampleCard 
-          key={index}
-          title={example.title}
-          description={example.description}
-          prompt={example.prompt}
-          toolName={example.toolName}
-          index={index}
-        />
-      ))}
+    <div className="space-y-6">
+      <PromptingTips />
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {examples.map((example, index) => (
+          <ExampleCard 
+            key={index}
+            title={example.title}
+            description={example.description}
+            prompt={example.prompt}
+            toolName={example.toolName}
+            sampleImages={example.sampleImages}
+            useCases={example.useCases}
+            index={index}
+          />
+        ))}
+      </div>
+      
+      <motion.div 
+        className="mt-6 text-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+      >
+        <h3 className="font-semibold mb-2">როგორ ავირჩიოთ სწორი ინსტრუმენტი?</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          DALL-E 3 - ფოტორეალისტური გამოსახულებებისთვის და ზუსტი პრომფტის კონტროლისთვის<br />
+          Midjourney - მხატვრული და შემოქმედებითი სტილის გამოსახულებებისთვის<br />
+          Canva AI - მარტივი მარკეტინგული და ბიზნეს გრაფიკისთვის<br />
+        </p>
+      </motion.div>
     </div>
   );
 };
 
-export default VisualContentShowcase;
+export default EnhancedVisualContentShowcase;
