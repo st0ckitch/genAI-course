@@ -35,7 +35,10 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
           variants={itemVariants}
           className="w-full"
         >
-          <ComponentResolver componentName={component} />
+          <ComponentResolver 
+            componentName={component} 
+            props={content.componentProps || {}}
+          />
         </motion.div>
       );
     }
