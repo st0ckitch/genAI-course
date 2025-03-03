@@ -98,6 +98,15 @@ const Presentation = () => {
 
   return (
     <div className={`slide-container ${isPresenterMode ? 'presenter-mode' : ''}`}>
+      {/* Add the ModuleSelector component here */}
+      <ModuleSelector currentModule={currentModule} onModuleChange={handleModuleChange} />
+      
+      {/* Add ThemeSwitch for light/dark mode */}
+      <ThemeSwitch />
+      
+      {/* Add KeyboardControls for help */}
+      <KeyboardControls />
+      
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -108,7 +117,7 @@ const Presentation = () => {
           className="h-full w-full"
         >
           <Slide 
-            content={slides[currentSlide]} 
+            content={currentSlides[currentSlide]} 
             slideNumber={currentSlide + 1} 
             totalSlides={totalSlides} 
           />
@@ -168,7 +177,7 @@ const Presentation = () => {
         >
           <h3 className="text-lg font-bold mb-3">Slides</h3>
           <ul className="space-y-2">
-            {slides.map((slide, index) => (
+            {currentSlides.map((slide, index) => (
               <li key={index}>
                 <button
                   onClick={() => goToSlide(index)}
