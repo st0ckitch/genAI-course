@@ -1,10 +1,4 @@
-// Visual Content Generation
-  {
-    title: "ვიზუალური კონტენტის გენერაციის ინსტრუმენტები",
-    subtitle: "DALL-E 3, Midjourney და სხვა ინსტრუმენტები",
-    component: "VisualContentShowcase",
-    content: [
-      "AI-ით მართული ვიზუალური კონტენტის შექმნა მნიშვნელოვნად ზრდის პროდუქტიულობას შემდexport const module2Slides = [
+export const module2Slides = [
   // Title Slide
   {
     title: "AI ინსტრუმენტები და მათი გამოყენება პროდუქტიულობისთვის",
