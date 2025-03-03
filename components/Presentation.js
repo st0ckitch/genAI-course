@@ -98,9 +98,6 @@ const Presentation = () => {
 
   return (
     <div className={`slide-container ${isPresenterMode ? 'presenter-mode' : ''}`}>
-      {/* Add the ModuleSelector component here */}
-      <ModuleSelector currentModule={currentModule} onModuleChange={handleModuleChange} />
-      
       {/* Add ThemeSwitch for light/dark mode */}
       <ThemeSwitch />
       
@@ -173,21 +170,50 @@ const Presentation = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="fixed top-20 right-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 z-50 w-60 max-h-96 overflow-y-auto"
+          className="fixed top-20 right-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 z-50 w-72 max-h-96 overflow-y-auto"
         >
-          <h3 className="text-lg font-bold mb-3">Slides</h3>
-          <ul className="space-y-2">
+          <h3 className="text-lg font-bold mb-3">Navigation</h3>
+          
+          {/* Module Selector inside menu */}
+          <div className="mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">
+            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Select Module:</h4>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleModuleChange(1)}
+                className={`px-3 py-2 rounded flex-1 text-center text-sm ${
+                  currentModule === 1 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                Module 1: LLM Fundamentals
+              </button>
+              <button
+                onClick={() => handleModuleChange(2)}
+                className={`px-3 py-2 rounded flex-1 text-center text-sm ${
+                  currentModule === 2 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                Module 2: AI Tools
+              </button>
+            </div>
+          </div>
+          
+          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Current Module Slides:</h4>
+          <ul className="space-y-1">
             {currentSlides.map((slide, index) => (
               <li key={index}>
                 <button
                   onClick={() => goToSlide(index)}
-                  className={`w-full text-left px-3 py-2 rounded ${
+                  className={`w-full text-left px-3 py-2 rounded text-sm ${
                     currentSlide === index
                       ? 'bg-primary-500 text-white'
                       : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  {index + 1}. {slide.title.substring(0, 20)}{slide.title.length > 20 ? '...' : ''}
+                  {index + 1}. {slide.title.substring(0, 30)}{slide.title.length > 30 ? '...' : ''}
                 </button>
               </li>
             ))}
