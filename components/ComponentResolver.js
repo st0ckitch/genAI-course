@@ -7,10 +7,10 @@ import AIToolsGrid from './AIToolsGrid';
 import ContentToolsComparison from './ContentToolsComparison';
 import VisualContentShowcase from './VisualContentShowcase';
 
-// Import enhanced components
-import EnhancedAIToolsGrid from './EnhancedAIToolsGrid';
-import EnhancedContentToolsComparison from './EnhancedContentToolsComparison';
-import EnhancedVisualContentShowcase from './EnhancedVisualContentShowcase';
+// Import new components for AI history slides
+import SymbolicAIExamples from './SymbolicAIExamples';
+import DeepLearningExamples from './DeepLearningExamples';
+import LLMEvolutionTimeline from './LLMEvolutionTimeline';
 
 // This component resolves and renders custom components from slide data
 const ComponentResolver = ({ componentName, props = {} }) => {
@@ -25,6 +25,14 @@ const ComponentResolver = ({ componentName, props = {} }) => {
     case 'TransformerSVG':
       return <TransformerSVG />;
       
+    // New AI history components
+    case 'SymbolicAIExamples':
+      return <SymbolicAIExamples />;
+    case 'DeepLearningExamples':
+      return <DeepLearningExamples />;
+    case 'LLMEvolutionTimeline':
+      return <LLMEvolutionTimeline />;
+      
     // Module 2 components - original versions
     case 'AIToolsGrid':
       return <AIToolsGrid toolType={props.toolType || 'document'} />;
@@ -32,14 +40,6 @@ const ComponentResolver = ({ componentName, props = {} }) => {
       return <ContentToolsComparison />;
     case 'VisualContentShowcase':
       return <VisualContentShowcase />;
-      
-    // Enhanced Module 2 components
-    case 'EnhancedAIToolsGrid':
-      return <EnhancedAIToolsGrid toolType={props.toolType || 'document'} />;
-    case 'EnhancedContentToolsComparison':
-      return <EnhancedContentToolsComparison />;
-    case 'EnhancedVisualContentShowcase':
-      return <EnhancedVisualContentShowcase />;
       
     default:
       return <div className="text-red-500">Component "{componentName}" not found</div>;
