@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiAlertTriangle, FiClock } from 'react-icons/fi';
 
@@ -7,6 +7,40 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [error, setError] = useState(null);
+  const [isGeminiAvailable, setIsGeminiAvailable] = useState(false);
+  
+  // Prevent space navigation when focused on the textarea
+  useEffect(() => {
+    const textarea = document.querySelector('textarea');
+    
+    const handleKeyDown = (e) => {
+      // Prevent space from triggering slide navigation
+      if (e.key === ' ' && document.activeElement === textarea) {
+        e.stopPropagation();
+      }
+    };
+    
+    // Add event listener to the document
+    document.addEventListener('keydown', handleKeyDown, true);
+    
+    // Check if Gemini API is available
+    const checkGeminiAvailability = async () => {
+      try {
+        await import('@google/generative-ai');
+        setIsGeminiAvailable(true);
+      } catch (err) {
+        console.log('Gemini API not available:', err);
+        setIsGeminiAvailable(false);
+      }
+    };
+    
+    checkGeminiAvailability();
+    
+    // Clean up
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, []);
 
   // Define evaluation criteria based on exercise type if not provided
   const defaultCriteria = {
@@ -84,6 +118,57 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
     };
   };
 
+  // Evaluate using Gemini API
+  const evaluateWithGemini = async (promptText) => {
+    try {
+      const { GoogleGenerativeAI } = await import('@google/generative-ai');
+      const genAI = new GoogleGenerativeAI(apiKey || "AIzaSyA5hj1m1hCbcVP-2aID-CKt0Mk54aAVgwE");
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const evaluationPrompt = `
+You are an expert prompt engineer evaluating a user's prompt for a ${exerciseType} scenario. 
+Evaluate the following prompt based on these criteria:
+${evaluationCriteria.map(criterion => `- ${criterion}`).join('\n')}
+
+For each criterion, provide a score (1-10) and brief feedback.
+Then provide an overall score (1-10) and 2-3 specific suggestions to improve the prompt.
+Finally, identify the top strength and top weakness of this prompt.
+
+Format your response as a JSON object with the following structure:
+{
+  "criteriaEvaluation": [
+    {"criterion": "criterion name", "score": number, "feedback": "brief feedback"},
+    ...
+  ],
+  "overallScore": number,
+  "suggestions": ["suggestion 1", "suggestion 2", ...],
+  "topStrength": "description of top strength",
+  "topWeakness": "description of top weakness"
+}
+
+USER PROMPT TO EVALUATE:
+${promptText}
+`;
+
+      const result = await model.generateContent(evaluationPrompt);
+      const responseText = result.response.text();
+      
+      // Try to parse JSON response
+      try {
+        const feedbackData = JSON.parse(responseText);
+        return feedbackData;
+      } catch (jsonError) {
+        console.error("Failed to parse Gemini response:", jsonError);
+        // Fall back to simulation
+        return simulateEvaluation(promptText);
+      }
+    } catch (error) {
+      console.error("Error with Gemini API:", error);
+      // Fall back to simulation
+      return simulateEvaluation(promptText);
+    }
+  };
+
   const evaluatePrompt = async () => {
     if (!prompt.trim()) {
       setError('Please enter a prompt to evaluate');
@@ -94,13 +179,26 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
     setError(null);
     
     try {
-      // Simply use the simulation for now
-      setTimeout(() => {
-        setFeedback(simulateEvaluation(prompt));
-        setIsLoading(false);
-      }, 1500); // Add a short delay to simulate processing
+      let result;
+      
+      if (isGeminiAvailable) {
+        // Try to use Gemini API
+        try {
+          result = await evaluateWithGemini(prompt);
+        } catch (geminiError) {
+          console.error("Error using Gemini API:", geminiError);
+          result = simulateEvaluation(prompt);
+        }
+      } else {
+        // Fall back to simulation with delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        result = simulateEvaluation(prompt);
+      }
+      
+      setFeedback(result);
     } catch (err) {
       setError(`Error evaluating prompt: ${err.message}`);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -123,6 +221,11 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
         <h3 className="text-lg font-bold mb-2">Prompt Evaluator</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           Enter your prompt below and get feedback on how effective it is.
+          {!isGeminiAvailable && (
+            <span className="block mt-1 italic">
+              (Using simulation mode - for full AI evaluation, install @google/generative-ai)
+            </span>
+          )}
         </p>
         
         <div className="mb-4">
