@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { SyntaxHighlighter } from 'react-syntax-highlighter';
 import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import ComponentResolver from './ComponentResolver';
 
+// Lazy load the PromptEvaluator component
+const PromptEvaluator = lazy(() => import('./PromptEvaluator'));
+
 const Slide = ({ content, slideNumber, totalSlides }) => {
-  const { title, subtitle, content: slideContent, notes, background, type, codeBlock, component } = content;
+  const { 
+    title, 
+    subtitle, 
+    content: slideContent, 
+    notes, 
+    background, 
+    type, 
+    codeBlock, 
+    component,
+    interactivePrompt, // New property for interactive prompt evaluator
+    promptConfig // Configuration for the prompt evaluator
+  } = content;
 
   // Animation variants for slide elements
   const containerVariants = {
@@ -59,7 +73,7 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
       );
     }
 
-    if (Array.isArray(slideContent)) {
+if (Array.isArray(slideContent)) {
       return slideContent.map((item, index) => {
         if (typeof item === 'string') {
           return (
@@ -105,7 +119,7 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
           );
         }
 
-        if (item.type === 'quote') {
+if (item.type === 'quote') {
           return (
             <motion.blockquote
               key={index}
@@ -158,7 +172,9 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
     );
   };
 
-  // Set background styles
+
+
+// Set background styles
   const backgroundStyle = {};
   if (background) {
     if (background.color) {
@@ -208,6 +224,22 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
           className="slide-body"
         >
           {renderSlideContent()}
+          
+          {/* Add interactive prompt evaluator if specified */}
+          {interactivePrompt && (
+            <motion.div 
+              variants={itemVariants}
+              className="mt-8 mb-4"
+            >
+              <Suspense fallback={<div className="p-4 text-center">Loading Prompt Evaluator...</div>}>
+                <PromptEvaluator 
+                  exerciseType={promptConfig?.type || 'business'} 
+                  criteria={promptConfig?.criteria || []}
+                  apiKey={promptConfig?.apiKey}
+                />
+              </Suspense>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
       
