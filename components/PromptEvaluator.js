@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiCheckCircle, FiAlertTriangle, FiClock } from 'react-icons/fi';
+import { FiAlertTriangle, FiClock } from 'react-icons/fi';
 
 const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) => {
   const [prompt, setPrompt] = useState('');
@@ -35,22 +35,54 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
 
   const evaluationCriteria = criteria.length > 0 ? criteria : defaultCriteria[exerciseType] || defaultCriteria.business;
 
-  // Dynamic import for the Google Generative AI library
-  const [genAiLibrary, setGenAiLibrary] = useState(null);
-  
-  useEffect(() => {
-    // Load the Google Generative AI library dynamically
-    const loadLibrary = async () => {
-      try {
-        const module = await import('@google/generative-ai');
-        setGenAiLibrary(module);
-      } catch (err) {
-        console.error("Failed to load Google Generative AI library:", err);
-      }
-    };
+  // Simple evaluation without API
+  const simulateEvaluation = (promptText) => {
+    // Simple heuristics for prompt evaluation
+    const lengthScore = Math.min(10, Math.max(1, Math.floor(promptText.length / 100)));
+    const hasRole = /as a|as an|acting as|role of|perspective of/i.test(promptText) ? 8 : 4;
+    const hasContext = /context|background|situation|scenario/i.test(promptText) ? 8 : 4;
+    const hasFormat = /format|structure|organize|layout/i.test(promptText) ? 7 : 3;
+    const hasExamples = /example|for instance|such as|like this/i.test(promptText) ? 9 : 5;
     
-    loadLibrary();
-  }, []);
+    const criteriaScores = evaluationCriteria.map(criterion => {
+      let score = 5; // Default score
+      
+      if (/role|expert|perspective/i.test(criterion)) score = hasRole;
+      else if (/context|background/i.test(criterion)) score = hasContext;
+      else if (/format|structure|output/i.test(criterion)) score = hasFormat;
+      else if (/example|sample/i.test(criterion)) score = hasExamples;
+      else if (/specific|detail/i.test(criterion)) score = lengthScore;
+      
+      // Add some randomness to make it more realistic
+      score = Math.max(1, Math.min(10, score + (Math.random() * 2 - 1)));
+      
+      return {
+        criterion,
+        score: Math.round(score),
+        feedback: score > 7 ? "Well defined" : score > 4 ? "Adequate but could improve" : "Needs more detail"
+      };
+    });
+    
+    const overallScore = Math.round(criteriaScores.reduce((sum, item) => sum + item.score, 0) / criteriaScores.length);
+    
+    const suggestions = [
+      "Be more specific about the desired outcome",
+      "Add more context about the target audience",
+      "Include examples of the style or format you want",
+      "Assign a clearer role to the AI",
+      "Specify the format for the output",
+      "Add constraints or limitations",
+      "Break down complex requests into steps"
+    ].sort(() => Math.random() - 0.5);
+    
+    return {
+      criteriaEvaluation: criteriaScores,
+      overallScore,
+      suggestions: suggestions.slice(0, 3),
+      topStrength: hasRole > 5 ? "Good role assignment" : hasContext > 5 ? "Good context provision" : "Adequate length",
+      topWeakness: hasRole <= 5 ? "Lacks clear role assignment" : hasContext <= 5 ? "Insufficient context" : "Could be more detailed"
+    };
+  };
 
   const evaluatePrompt = async () => {
     if (!prompt.trim()) {
@@ -62,105 +94,13 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
     setError(null);
     
     try {
-      // Simulate evaluation if Google Generative AI is not available
-      // In a production environment, you would use a real API call
-      
-      // Create a simple evaluation based on prompt characteristics
-      const simulateEvaluation = (promptText) => {
-        // Simple heuristics for prompt evaluation
-        const lengthScore = Math.min(10, Math.max(1, Math.floor(promptText.length / 100)));
-        const hasRole = /as a|as an|acting as|role of|perspective of/i.test(promptText) ? 8 : 4;
-        const hasContext = /context|background|situation|scenario/i.test(promptText) ? 8 : 4;
-        const hasFormat = /format|structure|organize|layout/i.test(promptText) ? 7 : 3;
-        const hasExamples = /example|for instance|such as|like this/i.test(promptText) ? 9 : 5;
-        
-        const criteriaScores = evaluationCriteria.map(criterion => {
-          let score = 5; // Default score
-          
-          if (/role|expert|perspective/i.test(criterion)) score = hasRole;
-          else if (/context|background/i.test(criterion)) score = hasContext;
-          else if (/format|structure|output/i.test(criterion)) score = hasFormat;
-          else if (/example|sample/i.test(criterion)) score = hasExamples;
-          else if (/specific|detail/i.test(criterion)) score = lengthScore;
-          
-          // Add some randomness to make it more realistic
-          score = Math.max(1, Math.min(10, score + (Math.random() * 2 - 1)));
-          
-          return {
-            criterion,
-            score: Math.round(score),
-            feedback: score > 7 ? "Well defined" : score > 4 ? "Adequate but could improve" : "Needs more detail"
-          };
-        });
-        
-        const overallScore = Math.round(criteriaScores.reduce((sum, item) => sum + item.score, 0) / criteriaScores.length);
-        
-        const suggestions = [
-          "Be more specific about the desired outcome",
-          "Add more context about the target audience",
-          "Include examples of the style or format you want"
-        ];
-        
-        return {
-          criteriaEvaluation: criteriaScores,
-          overallScore,
-          suggestions: suggestions.slice(0, 3),
-          topStrength: hasRole > 5 ? "Good role assignment" : hasContext > 5 ? "Good context provision" : "Adequate length",
-          topWeakness: hasRole <= 5 ? "Lacks clear role assignment" : hasContext <= 5 ? "Insufficient context" : "Could be more detailed"
-        };
-      };
-      
-      // Try to use the Google Generative AI if available, otherwise use simulation
-      try {
-        // This might fail if the library is not available
-        const { GoogleGenerativeAI } = await import('@google/generative-ai');
-        const genAI = new GoogleGenerativeAI(apiKey || "AIzaSyA5hj1m1hCbcVP-2aID-CKt0Mk54aAVgwE");
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        const evaluationPrompt = `
-You are an expert prompt engineer evaluating a user's prompt for a ${exerciseType} scenario. 
-Evaluate the following prompt based on these criteria:
-${evaluationCriteria.map(criterion => `- ${criterion}`).join('\n')}
-
-For each criterion, provide a score (1-10) and brief feedback.
-Then provide an overall score (1-10) and 2-3 specific suggestions to improve the prompt.
-Finally, identify the top strength and top weakness of this prompt.
-
-Format your response as a JSON object with the following structure:
-{
-  "criteriaEvaluation": [
-    {"criterion": "criterion name", "score": number, "feedback": "brief feedback"},
-    ...
-  ],
-  "overallScore": number,
-  "suggestions": ["suggestion 1", "suggestion 2", ...],
-  "topStrength": "description of top strength",
-  "topWeakness": "description of top weakness"
-}
-
-USER PROMPT TO EVALUATE:
-${prompt}
-`;
-
-        const result = await model.generateContent(evaluationPrompt);
-        const responseText = result.response.text();
-        
-        // Try to parse JSON response
-        try {
-          const feedbackData = JSON.parse(responseText);
-          setFeedback(feedbackData);
-        } catch (jsonError) {
-          // If not properly formatted JSON, fall back to simulation
-          setFeedback(simulateEvaluation(prompt));
-        }
-      } catch (importError) {
-        // If Google Generative AI is not available, use simulation
-        console.log("Google Generative AI not available, using simulation");
+      // Simply use the simulation for now
+      setTimeout(() => {
         setFeedback(simulateEvaluation(prompt));
-      }
+        setIsLoading(false);
+      }, 1500); // Add a short delay to simulate processing
     } catch (err) {
       setError(`Error evaluating prompt: ${err.message}`);
-    } finally {
       setIsLoading(false);
     }
   };
