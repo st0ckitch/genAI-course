@@ -153,9 +153,26 @@ ${promptText}
       const result = await model.generateContent(evaluationPrompt);
       const responseText = result.response.text();
       
+      // Log the full response to debug
+      console.log("Raw Gemini response:", responseText);
+      
+      // Extract JSON from the response text
+      // The API might return JSON wrapped in markdown code blocks
+      let jsonText = responseText;
+      
+      // Try to extract JSON from markdown code block if present
+      const jsonRegex = /```(?:json)?\s*(\{[\s\S]*?\})\s*```/;
+      const match = responseText.match(jsonRegex);
+      if (match && match[1]) {
+        jsonText = match[1];
+      }
+      
+      console.log("Extracted JSON:", jsonText);
+      
       // Try to parse JSON response
       try {
-        const feedbackData = JSON.parse(responseText);
+        const feedbackData = JSON.parse(jsonText);
+        console.log("Parsed data:", feedbackData);
         return feedbackData;
       } catch (jsonError) {
         console.error("Failed to parse Gemini response:", jsonError);
