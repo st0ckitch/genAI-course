@@ -45,25 +45,25 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
   // Define evaluation criteria based on exercise type if not provided
   const defaultCriteria = {
     business: [
-      'Clarity and specificity',
-      'Role assignment',
-      'Context provided',
-      'Format specifications',
-      'Relevant constraints'
+      'როლის მინიჭება',
+      'დეტალურობა და სპეციფიკურობა',
+      'კონტექსტის მიწოდება',
+      'ფორმატის მითითება',
+      'შეზღუდვების განსაზღვრა'
     ],
     creative: [
-      'Creative direction clarity',
-      'Style specifications',
-      'Target audience definition',
-      'Examples provided',
-      'Constraints and limitations'
+      'კრეატიული მიმართულების სიცხადე',
+      'სტილის მითითება',
+      'სამიზნე აუდიტორიის განსაზღვრა',
+      'მაგალითების მოწოდება',
+      'შეზღუდვების და ჩარჩოების მითითება'
     ],
     technical: [
-      'Technical specificity',
-      'Step-by-step instructions',
-      'Expected output format',
-      'Edge case handling',
-      'Resource constraints'
+      'ტექნიკური სპეციფიკაცია',
+      'ნაბიჯ-ნაბიჯ ინსტრუქციები',
+      'მოსალოდნელი შედეგის ფორმატი',
+      'გამონაკლისების დამუშავება',
+      'რესურსების შეზღუდვები'
     ]
   };
 
@@ -73,19 +73,19 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
   const simulateEvaluation = (promptText) => {
     // Simple heuristics for prompt evaluation
     const lengthScore = Math.min(10, Math.max(1, Math.floor(promptText.length / 100)));
-    const hasRole = /as a|as an|acting as|role of|perspective of/i.test(promptText) ? 8 : 4;
-    const hasContext = /context|background|situation|scenario/i.test(promptText) ? 8 : 4;
-    const hasFormat = /format|structure|organize|layout/i.test(promptText) ? 7 : 3;
-    const hasExamples = /example|for instance|such as|like this/i.test(promptText) ? 9 : 5;
+    const hasRole = /as a|as an|acting as|role of|perspective of|როგორც|იმოქმედე როგორც/i.test(promptText) ? 8 : 4;
+    const hasContext = /context|background|situation|scenario|კონტექსტი|სიტუაცია|ფონი|სცენარი/i.test(promptText) ? 8 : 4;
+    const hasFormat = /format|structure|organize|layout|ფორმატი|სტრუქტურა|მოაწესრიგე/i.test(promptText) ? 7 : 3;
+    const hasExamples = /example|for instance|such as|like this|მაგალითად|მაგალითი|როგორიცაა/i.test(promptText) ? 9 : 5;
     
     const criteriaScores = evaluationCriteria.map(criterion => {
       let score = 5; // Default score
       
-      if (/role|expert|perspective/i.test(criterion)) score = hasRole;
-      else if (/context|background/i.test(criterion)) score = hasContext;
-      else if (/format|structure|output/i.test(criterion)) score = hasFormat;
-      else if (/example|sample/i.test(criterion)) score = hasExamples;
-      else if (/specific|detail/i.test(criterion)) score = lengthScore;
+      if (/როლი|როგორც|role/i.test(criterion)) score = hasRole;
+      else if (/კონტექსტ|context|ფონი/i.test(criterion)) score = hasContext;
+      else if (/ფორმატ|format|სტრუქტურ/i.test(criterion)) score = hasFormat;
+      else if (/მაგალით|example|სამპლ/i.test(criterion)) score = hasExamples;
+      else if (/დეტალ|specific|სპეციფიკ/i.test(criterion)) score = lengthScore;
       
       // Add some randomness to make it more realistic
       score = Math.max(1, Math.min(10, score + (Math.random() * 2 - 1)));
@@ -93,28 +93,28 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
       return {
         criterion,
         score: Math.round(score),
-        feedback: score > 7 ? "Well defined" : score > 4 ? "Adequate but could improve" : "Needs more detail"
+        feedback: score > 7 ? "კარგად განსაზღვრული" : score > 4 ? "საკმარისია, მაგრამ საჭიროებს გაუმჯობესებას" : "საჭიროებს მეტ დეტალს"
       };
     });
     
     const overallScore = Math.round(criteriaScores.reduce((sum, item) => sum + item.score, 0) / criteriaScores.length);
     
     const suggestions = [
-      "Be more specific about the desired outcome",
-      "Add more context about the target audience",
-      "Include examples of the style or format you want",
-      "Assign a clearer role to the AI",
-      "Specify the format for the output",
-      "Add constraints or limitations",
-      "Break down complex requests into steps"
+      "უფრო დეტალურად აღწერეთ სასურველი შედეგი",
+      "დაამატეთ მეტი კონტექსტი სამიზნე აუდიტორიის შესახებ",
+      "მოიყვანეთ სასურველი სტილის ან ფორმატის მაგალითები",
+      "მიანიჭეთ AI-ს მკაფიო როლი",
+      "განსაზღვრეთ გამოსავლის ფორმატი",
+      "დაამატეთ შეზღუდვები ან ლიმიტები",
+      "დაყავით რთული მოთხოვნები ნაბიჯებად"
     ].sort(() => Math.random() - 0.5);
     
     return {
       criteriaEvaluation: criteriaScores,
       overallScore,
       suggestions: suggestions.slice(0, 3),
-      topStrength: hasRole > 5 ? "Good role assignment" : hasContext > 5 ? "Good context provision" : "Adequate length",
-      topWeakness: hasRole <= 5 ? "Lacks clear role assignment" : hasContext <= 5 ? "Insufficient context" : "Could be more detailed"
+      topStrength: hasRole > 5 ? "კარგი როლის მინიჭება" : hasContext > 5 ? "კარგად მოწოდებული კონტექსტი" : "ადეკვატური სიგრძე",
+      topWeakness: hasRole <= 5 ? "არ აქვს მკაფიო როლის მინიჭება" : hasContext <= 5 ? "არასაკმარისი კონტექსტი" : "საჭიროებს მეტ დეტალს"
     };
   };
 
@@ -123,30 +123,30 @@ const PromptEvaluator = ({ exerciseType = 'business', criteria = [], apiKey }) =
     try {
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(apiKey || "AIzaSyA5hj1m1hCbcVP-2aID-CKt0Mk54aAVgwE");
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
       const evaluationPrompt = `
-You are an expert prompt engineer evaluating a user's prompt for a ${exerciseType} scenario. 
-Evaluate the following prompt based on these criteria:
+შენ ხარ ექსპერტი პრომფტ-ინჟინერიაში და აფასებ მომხმარებლის პრომფტს ${exerciseType} სცენარისთვის.
+შეაფასე შემდეგი პრომფტი ამ კრიტერიუმების მიხედვით:
 ${evaluationCriteria.map(criterion => `- ${criterion}`).join('\n')}
 
-For each criterion, provide a score (1-10) and brief feedback.
-Then provide an overall score (1-10) and 2-3 specific suggestions to improve the prompt.
-Finally, identify the top strength and top weakness of this prompt.
+თითოეული კრიტერიუმისთვის მიეცი ქულა (1-10) და მოკლე უკუკავშირი.
+შემდეგ მიეცი საერთო ქულა (1-10) და 2-3 კონკრეტული რჩევა პრომფტის გასაუმჯობესებლად.
+ბოლოს, განსაზღვრე პრომფტის ძირითადი ღირსება და ძირითადი ნაკლი.
 
-Format your response as a JSON object with the following structure:
+შეფასების შედეგები წარმოადგინე მკაცრად JSON ობიექტის ფორმატში, რომელსაც ექნება შემდეგი სტრუქტურა:
 {
   "criteriaEvaluation": [
-    {"criterion": "criterion name", "score": number, "feedback": "brief feedback"},
+    {"criterion": "კრიტერიუმის სახელი", "score": რიცხვი, "feedback": "მოკლე უკუკავშირი"},
     ...
   ],
-  "overallScore": number,
-  "suggestions": ["suggestion 1", "suggestion 2", ...],
-  "topStrength": "description of top strength",
-  "topWeakness": "description of top weakness"
+  "overallScore": რიცხვი,
+  "suggestions": ["რჩევა 1", "რჩევა 2", ...],
+  "topStrength": "ძირითადი ღირსების აღწერა",
+  "topWeakness": "ძირითადი ნაკლის აღწერა"
 }
 
-USER PROMPT TO EVALUATE:
+მომხმარებლის პრომფტი შესაფასებლად:
 ${promptText}
 `;
 
@@ -235,12 +235,12 @@ ${promptText}
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <div className="p-4">
-        <h3 className="text-lg font-bold mb-2">Prompt Evaluator</h3>
+        <h3 className="text-lg font-bold mb-2">პრომფტის შემფასებელი</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Enter your prompt below and get feedback on how effective it is.
+          შეიყვანეთ თქვენი პრომფტი ქვემოთ და მიიღეთ უკუკავშირი მისი ეფექტურობის შესახებ.
           {!isGeminiAvailable && (
             <span className="block mt-1 italic">
-              (Using simulation mode - for full AI evaluation, install @google/generative-ai)
+              (გამოიყენება სიმულაციის რეჟიმი - სრული AI შეფასებისთვის, დააინსტალირეთ @google/generative-ai)
             </span>
           )}
         </p>
@@ -248,7 +248,11 @@ ${promptText}
         <div className="mb-4">
           <textarea
             className="w-full min-h-[100px] p-3 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-            placeholder={`Enter your ${exerciseType} prompt here...`}
+            placeholder={`შეიყვანეთ თქვენი ${
+              exerciseType === 'business' ? 'ბიზნეს' : 
+              exerciseType === 'creative' ? 'კრეატიული' : 
+              'ტექნიკური'
+            } პრომფტი აქ...`}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
           />
@@ -264,7 +268,7 @@ ${promptText}
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
-            {isLoading ? 'Evaluating...' : 'Evaluate Prompt'}
+            {isLoading ? 'შეფასება...' : 'შეაფასე პრომფტი'}
           </button>
         </div>
         
@@ -288,7 +292,7 @@ ${promptText}
             className="flex items-center justify-center p-8"
           >
             <FiClock className="animate-spin text-blue-500 mr-2" />
-            <span>Analyzing your prompt...</span>
+            <span>პრომფტის ანალიზი მიმდინარეობს...</span>
           </motion.div>
         )}
         
@@ -305,14 +309,14 @@ ${promptText}
             ) : (
               <>
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-lg font-semibold">Evaluation Results</h4>
+                  <h4 className="text-lg font-semibold">შეფასების შედეგები</h4>
                   <div className={`px-3 py-1 rounded-full ${getOverallScoreColor(feedback.overallScore)}`}>
-                    Overall Score: {feedback.overallScore}/10
+                    საერთო ქულა: {feedback.overallScore}/10
                   </div>
                 </div>
                 
                 <div className="mb-4">
-                  <h5 className="font-medium mb-2">Criteria Evaluation</h5>
+                  <h5 className="font-medium mb-2">კრიტერიუმების შეფასება</h5>
                   <div className="space-y-2">
                     {feedback.criteriaEvaluation?.map((item, index) => (
                       <div key={index} className="flex justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -327,18 +331,18 @@ ${promptText}
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
-                    <h5 className="font-medium text-green-800 dark:text-green-400 mb-2">Top Strength</h5>
+                    <h5 className="font-medium text-green-800 dark:text-green-400 mb-2">ძირითადი ღირსება</h5>
                     <p className="text-sm">{feedback.topStrength}</p>
                   </div>
                   
                   <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-                    <h5 className="font-medium text-red-800 dark:text-red-400 mb-2">Top Weakness</h5>
+                    <h5 className="font-medium text-red-800 dark:text-red-400 mb-2">ძირითადი ნაკლი</h5>
                     <p className="text-sm">{feedback.topWeakness}</p>
                   </div>
                 </div>
                 
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md">
-                  <h5 className="font-medium text-blue-800 dark:text-blue-400 mb-2">Improvement Suggestions</h5>
+                  <h5 className="font-medium text-blue-800 dark:text-blue-400 mb-2">გაუმჯობესების რეკომენდაციები</h5>
                   <ul className="list-disc list-inside text-sm space-y-1">
                     {feedback.suggestions?.map((suggestion, index) => (
                       <li key={index}>{suggestion}</li>
