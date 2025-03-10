@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import AITimeline from './AITimeline';
 import ModelComparison from './ModelComparison';
 import PromptEngineering from './PromptEngineering';
@@ -11,6 +11,9 @@ import VisualContentShowcase from './VisualContentShowcase';
 import SymbolicAIExamples from './SymbolicAIExamples';
 import DeepLearningExamples from './DeepLearningExamples';
 import LLMEvolutionTimeline from './LLMEvolutionTimeline';
+
+// Lazy load the PromptEvaluator component
+const PromptEvaluator = lazy(() => import('./PromptEvaluator'));
 
 // This component resolves and renders custom components from slide data
 const ComponentResolver = ({ componentName, props = {} }) => {
@@ -40,6 +43,17 @@ const ComponentResolver = ({ componentName, props = {} }) => {
       return <ContentToolsComparison />;
     case 'VisualContentShowcase':
       return <VisualContentShowcase />;
+      
+    case 'PromptEvaluator':
+      return (
+        <Suspense fallback={<div className="p-4 text-center">Loading Prompt Evaluator...</div>}>
+          <PromptEvaluator 
+            exerciseType={props.exerciseType || 'business'} 
+            criteria={props.criteria || []}
+            apiKey={props.apiKey}
+          />
+        </Suspense>
+      );
       
     default:
       return <div className="text-red-500">Component "{componentName}" not found</div>;
