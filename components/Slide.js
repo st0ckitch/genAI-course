@@ -3,9 +3,17 @@ import { motion } from 'framer-motion';
 import { SyntaxHighlighter } from 'react-syntax-highlighter';
 import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import ComponentResolver from './ComponentResolver';
+import dynamic from 'next/dynamic';
+import LogoComponent from './LogoComponent';
 
-// Lazy load the PromptEvaluator component
-const PromptEvaluator = lazy(() => import('./PromptEvaluator'));
+// Dynamic import with no SSR to avoid issues with missing dependencies
+const PromptEvaluator = dynamic(
+  () => import('./PromptEvaluator'),
+  { 
+    ssr: false,
+    loading: () => <div className="p-4 text-center">Loading Prompt Evaluator...</div>
+  }
+);
 
 const Slide = ({ content, slideNumber, totalSlides }) => {
   const { 
@@ -73,7 +81,7 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
       );
     }
 
-if (Array.isArray(slideContent)) {
+    if (Array.isArray(slideContent)) {
       return slideContent.map((item, index) => {
         if (typeof item === 'string') {
           return (
@@ -119,7 +127,7 @@ if (Array.isArray(slideContent)) {
           );
         }
 
-if (item.type === 'quote') {
+        if (item.type === 'quote') {
           return (
             <motion.blockquote
               key={index}
@@ -172,9 +180,7 @@ if (item.type === 'quote') {
     );
   };
 
-
-
-// Set background styles
+  // Set background styles
   const backgroundStyle = {};
   if (background) {
     if (background.color) {
@@ -195,6 +201,9 @@ if (item.type === 'quote') {
       className="slide-content"
       style={backgroundStyle}
     >
+      {/* Add the logo component to every slide */}
+      <LogoComponent />
+      
       <motion.div
         className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh]"
         variants={containerVariants}
@@ -231,13 +240,11 @@ if (item.type === 'quote') {
               variants={itemVariants}
               className="mt-8 mb-4"
             >
-              <Suspense fallback={<div className="p-4 text-center">Loading Prompt Evaluator...</div>}>
-                <PromptEvaluator 
-                  exerciseType={promptConfig?.type || 'business'} 
-                  criteria={promptConfig?.criteria || []}
-                  apiKey={promptConfig?.apiKey}
-                />
-              </Suspense>
+              <PromptEvaluator 
+                exerciseType={promptConfig?.type || 'business'} 
+                criteria={promptConfig?.criteria || []}
+                apiKey={promptConfig?.apiKey}
+              />
             </motion.div>
           )}
         </motion.div>
