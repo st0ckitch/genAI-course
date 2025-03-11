@@ -2,7 +2,7 @@ import React from 'react';
 
 const LogoComponent = () => {
   return (
-    <div className="absolute top-6 right-6 z-40 w-24 h-24 flex items-center justify-center">
+    <div className="absolute top-6 left-6 z-40 w-24 h-24 flex items-center justify-center">
       <img
         src="/images/alte uni.png"
         alt="Alte University Logo"
