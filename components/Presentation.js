@@ -1,229 +1,267 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiArrowLeft, FiMaximize, FiMenu } from 'react-icons/fi';
-import Slide from './Slide';
-import ThemeSwitch from './ThemeSwitch';
-import KeyboardControls from './KeyboardControls';
-import ModuleSelector from './ModuleSelector';
-import { slides } from '../data/slides';
-import { module2Slides } from '../data/module2-slides';
+import React, { lazy, Suspense } from 'react';
+import { motion } from 'framer-motion';
+import { SyntaxHighlighter } from 'react-syntax-highlighter';
+import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import ComponentResolver from './ComponentResolver';
+import dynamic from 'next/dynamic';
+import LogoComponent from './LogoComponent';
 
-const Presentation = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isPresenterMode, setIsPresenterMode] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentModule, setCurrentModule] = useState(1);
-  
-  // Get the slides for the current module
-  const currentSlides = currentModule === 1 ? slides : module2Slides;
-  const totalSlides = currentSlides.length;
+// Dynamic import with no SSR to avoid issues with missing dependencies
+const PromptEvaluator = dynamic(
+  () => import('./PromptEvaluator'),
+  { 
+    ssr: false,
+    loading: () => <div className="p-4 text-center">Loading Prompt Evaluator...</div>
+  }
+);
 
-  // Reset slide index when changing modules
-  useEffect(() => {
-    setCurrentSlide(0);
-  }, [currentModule]);
+const Slide = ({ content, slideNumber, totalSlides }) => {
+  const { 
+    title, 
+    subtitle, 
+    content: slideContent, 
+    notes, 
+    background, 
+    type, 
+    codeBlock, 
+    component,
+    interactivePrompt, // New property for interactive prompt evaluator
+    promptConfig // Configuration for the prompt evaluator
+  } = content;
 
-  const nextSlide = useCallback(() => {
-    if (currentSlide < totalSlides - 1) {
-      setCurrentSlide(currentSlide + 1);
-    }
-  }, [currentSlide, totalSlides]);
-
-  const prevSlide = useCallback(() => {
-    if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
-    }
-  }, [currentSlide]);
-
-  const goToSlide = (index) => {
-    if (index >= 0 && index < totalSlides) {
-      setCurrentSlide(index);
-      setIsMenuOpen(false);
-    }
+  // Animation variants for slide elements
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+      },
+    },
   };
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((e) => {
-        console.error(`Error attempting to enable fullscreen mode: ${e.message}`);
-      });
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    },
   };
 
-  const togglePresenterMode = () => {
-    setIsPresenterMode(!isPresenterMode);
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-  
-  const handleModuleChange = (moduleId) => {
-    setCurrentModule(moduleId);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') {
-        nextSlide();
-      } else if (e.key === 'ArrowLeft') {
-        prevSlide();
-      } else if (e.key === 'f') {
-        toggleFullscreen();
-      } else if (e.key === 'p') {
-        togglePresenterMode();
-      } else if (e.key === 'm') {
-        toggleMenu();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, [nextSlide, prevSlide]);
-
-  return (
-    <div className={`slide-container ${isPresenterMode ? 'presenter-mode' : ''}`}>
-      {/* Add ThemeSwitch for light/dark mode */}
-      <ThemeSwitch />
-      
-      {/* Add KeyboardControls for help */}
-      <KeyboardControls />
-      
-      <AnimatePresence mode="wait">
+  const renderSlideContent = () => {
+    // If there's a component specified, render that component
+    if (component) {
+      return (
         <motion.div
-          key={currentSlide}
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -100 }}
-          transition={{ duration: 0.5 }}
-          className="h-full w-full"
+          variants={itemVariants}
+          className="w-full"
         >
-          <Slide 
-            content={currentSlides[currentSlide]} 
-            slideNumber={currentSlide + 1} 
-            totalSlides={totalSlides} 
+          <ComponentResolver 
+            componentName={component} 
+            props={content.componentProps || {}}
           />
         </motion.div>
-      </AnimatePresence>
+      );
+    }
+    
+    if (type === 'code' && codeBlock) {
+      return (
+        <div className="w-full overflow-hidden rounded-lg">
+          <SyntaxHighlighter
+            language={codeBlock.language || 'javascript'}
+            style={nightOwl}
+            showLineNumbers
+            wrapLines
+            className="text-sm md:text-base"
+          >
+            {codeBlock.code}
+          </SyntaxHighlighter>
+        </div>
+      );
+    }
 
-      <div className="fixed bottom-6 right-6 flex gap-3 z-50">
-        <button
-          onClick={prevSlide}
-          disabled={currentSlide === 0}
-          className={`p-3 rounded-full ${
-            currentSlide === 0 
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-              : 'bg-primary-600 text-white hover:bg-primary-700'
-          } transition-colors`}
-          aria-label="Previous slide"
-        >
-          <FiArrowLeft />
-        </button>
-        <button
-          onClick={nextSlide}
-          disabled={currentSlide === totalSlides - 1}
-          className={`p-3 rounded-full ${
-            currentSlide === totalSlides - 1 
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-              : 'bg-primary-600 text-white hover:bg-primary-700'
-          } transition-colors`}
-          aria-label="Next slide"
-        >
-          <FiArrowRight />
-        </button>
-      </div>
+    if (Array.isArray(slideContent)) {
+      return slideContent.map((item, index) => {
+        if (typeof item === 'string') {
+          return (
+            <motion.p
+              key={index}
+              variants={itemVariants}
+              className="text-lg md:text-xl mb-4"
+            >
+              {item}
+            </motion.p>
+          );
+        }
 
-      <div className="fixed top-6 right-6 flex gap-3 z-50">
-        <button
-          onClick={toggleMenu}
-          className="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-colors"
-          aria-label="Toggle menu"
-        >
-          <FiMenu />
-        </button>
-        <button
-          onClick={toggleFullscreen}
-          className="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-colors"
-          aria-label="Toggle fullscreen"
-        >
-          <FiMaximize />
-        </button>
-      </div>
+        if (item.type === 'list' && Array.isArray(item.items)) {
+          return (
+            <motion.ul
+              key={index}
+              variants={itemVariants}
+              className="list-disc list-inside space-y-2 mb-6"
+            >
+              {item.items.map((listItem, listIndex) => (
+                <li key={listIndex} className="text-lg md:text-xl">
+                  {listItem}
+                </li>
+              ))}
+            </motion.ul>
+          );
+        }
 
-      {isMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="fixed top-20 right-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 z-50 w-72 max-h-96 overflow-y-auto"
+        if (item.type === 'numbered-list' && Array.isArray(item.items)) {
+          return (
+            <motion.ol
+              key={index}
+              variants={itemVariants}
+              className="list-decimal list-inside space-y-2 mb-6"
+            >
+              {item.items.map((listItem, listIndex) => (
+                <li key={listIndex} className="text-lg md:text-xl">
+                  {listItem}
+                </li>
+              ))}
+            </motion.ol>
+          );
+        }
+
+        if (item.type === 'quote') {
+          return (
+            <motion.blockquote
+              key={index}
+              variants={itemVariants}
+              className="border-l-4 border-primary-500 pl-4 italic my-6"
+            >
+              <p className="text-xl md:text-2xl">{item.text}</p>
+              {item.author && (
+                <footer className="text-right mt-2 text-gray-600 dark:text-gray-400">
+                  — {item.author}
+                </footer>
+              )}
+            </motion.blockquote>
+          );
+        }
+
+        if (item.type === 'image') {
+          return (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              className="my-6 flex justify-center"
+            >
+              <img 
+                src={item.src} 
+                alt={item.alt || 'Slide image'} 
+                className={`max-h-[60vh] object-contain ${item.className || ''}`}
+              />
+              {item.caption && (
+                <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  {item.caption}
+                </p>
+              )}
+            </motion.div>
+          );
+        }
+
+        return null;
+      });
+    }
+
+    // Default case - just a text block
+    return (
+      <motion.p
+        variants={itemVariants}
+        className="text-lg md:text-xl"
+      >
+        {slideContent}
+      </motion.p>
+    );
+  };
+
+  // Set background styles
+  const backgroundStyle = {};
+  if (background) {
+    if (background.color) {
+      backgroundStyle.backgroundColor = background.color;
+    }
+    if (background.image) {
+      backgroundStyle.backgroundImage = `url(${background.image})`;
+      backgroundStyle.backgroundSize = 'cover';
+      backgroundStyle.backgroundPosition = 'center';
+    }
+    if (background.gradient) {
+      backgroundStyle.backgroundImage = background.gradient;
+    }
+  }
+
+  return (
+    <div 
+      className="slide-content"
+      style={backgroundStyle}
+    >
+      {/* Add the logo component only to first slides */}
+      {slideNumber === 1 && <LogoComponent />}
+      
+      <motion.div
+        className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh]"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {title && (
+          <motion.h1 
+            variants={itemVariants}
+            className="text-3xl md:text-5xl font-bold mb-4 text-primary-700 dark:text-primary-400"
+          >
+            {title}
+          </motion.h1>
+        )}
+        
+        {subtitle && (
+          <motion.h2 
+            variants={itemVariants}
+            className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300"
+          >
+            {subtitle}
+          </motion.h2>
+        )}
+        
+        <motion.div 
+          variants={containerVariants}
+          className="slide-body"
         >
-          <h3 className="text-lg font-bold mb-3">Navigation</h3>
+          {renderSlideContent()}
           
-          {/* Module Selector inside menu */}
-          <div className="mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">
-            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Select Module:</h4>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleModuleChange(1)}
-                className={`px-3 py-2 rounded flex-1 text-center text-sm ${
-                  currentModule === 1 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-              >
-                Module 1: LLM Fundamentals
-              </button>
-              <button
-                onClick={() => handleModuleChange(2)}
-                className={`px-3 py-2 rounded flex-1 text-center text-sm ${
-                  currentModule === 2 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-              >
-                Module 2: AI Tools
-              </button>
-            </div>
-          </div>
-          
-          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Current Module Slides:</h4>
-          <ul className="space-y-1">
-            {currentSlides.map((slide, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => goToSlide(index)}
-                  className={`w-full text-left px-3 py-2 rounded text-sm ${
-                    currentSlide === index
-                      ? 'bg-primary-500 text-white'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {index + 1}. {slide.title.substring(0, 30)}{slide.title.length > 30 ? '...' : ''}
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* Add interactive prompt evaluator if specified */}
+          {interactivePrompt && (
+            <motion.div 
+              variants={itemVariants}
+              className="mt-8 mb-4"
+            >
+              <PromptEvaluator 
+                exerciseType={promptConfig?.type || 'business'} 
+                criteria={promptConfig?.criteria || []}
+                apiKey={promptConfig?.apiKey}
+              />
+            </motion.div>
+          )}
         </motion.div>
+      </motion.div>
+      
+      {notes && (
+        <div className="presenter-notes">
+          <h3 className="text-sm font-semibold mb-2">პრეზენტატორის შენიშვნები:</h3>
+          <div className="text-sm">{notes}</div>
+        </div>
       )}
-
-      <div className="progress-bar" style={{ width: `${((currentSlide + 1) / totalSlides) * 100}%` }}></div>
+      
+      <div className="absolute bottom-4 left-4 text-sm text-gray-500 dark:text-gray-400">
+        {slideNumber} / {totalSlides}
+      </div>
     </div>
   );
 };
 
-export default Presentation;
+export default Slide;
