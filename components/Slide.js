@@ -196,10 +196,14 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
     }
   }
 
+  // Override background for the first slide to ensure text visibility
+  const finalBackgroundStyle = slideNumber === 1 ? 
+    { backgroundColor: 'white' } : backgroundStyle;
+    
   return (
     <div 
       className="slide-content"
-      style={backgroundStyle}
+      style={finalBackgroundStyle}
     >
       {/* Add the logo component to ALL slides (removed the slideNumber condition) */}
       <LogoComponent />
