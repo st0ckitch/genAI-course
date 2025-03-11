@@ -4,6 +4,9 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
 
+/* Import FiraGO font for Georgian language support */
+@import url('https://free.bboxtype.com/embedfonts/?family=FiraGO:400,500,700');
+
 :root {
   --foreground-rgb: 18, 18, 18;
   --background-start-rgb: 248, 250, 252;
@@ -28,6 +31,12 @@ body {
     rgb(var(--background-start-rgb));
   min-height: 100vh;
   overflow: hidden;
+  font-family: 'FiraGO', 'Inter', sans-serif;
+}
+
+/* Make sure Georgian text renders properly */
+h1, h2, h3, h4, h5, h6, p, span, li {
+  text-rendering: optimizeLegibility;
 }
 
 .slide-container {
