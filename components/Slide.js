@@ -201,8 +201,8 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
       className="slide-content"
       style={backgroundStyle}
     >
-      {/* Add the logo component only to first slides */}
-      {slideNumber === 1 && <LogoComponent />}
+      {/* Add the logo component to ALL slides (removed the slideNumber condition) */}
+      <LogoComponent />
       
       <motion.div
         className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh]"
