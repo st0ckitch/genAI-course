@@ -7,7 +7,7 @@ export const slides = [
     color: "#ffffff" // White background instead of gradient
   },
   notes: "მოგესალმებით LLM ტრენინგის პირველ მოდულში. დღეს ჩვენ შევისწავლით დიდი ენობრივი მოდელების საფუძვლებს, მათ ისტორიას, ტიპებს და როგორ ვიმუშაოთ მათთან ეფექტურად."
-}
+},
   
   // Agenda Slide
   {
