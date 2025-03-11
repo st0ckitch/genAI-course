@@ -1,10 +1,11 @@
-import React, { lazy, Suspense } from 'react';
-import { motion } from 'framer-motion';
-import { SyntaxHighlighter } from 'react-syntax-highlighter';
-import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import ComponentResolver from './ComponentResolver';
-import dynamic from 'next/dynamic';
-import LogoComponent from './LogoComponent';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiArrowRight, FiArrowLeft, FiMaximize, FiMenu } from 'react-icons/fi';
+import Slide from './Slide';
+import KeyboardControls from './KeyboardControls';
+import ModuleSelector from './ModuleSelector';
+import { slides } from '../data/slides';
+import { module2Slides } from '../data/module2-slides';
 
 // Dynamic import with no SSR to avoid issues with missing dependencies
 const PromptEvaluator = dynamic(
