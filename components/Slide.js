@@ -209,7 +209,7 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
       <LogoComponent />
       
       <motion.div
-        className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh]"
+        className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh] pt-24" /* Added pt-24 (padding-top) to create space for the logo */
         variants={containerVariants}
         initial="hidden"
         animate="visible"
