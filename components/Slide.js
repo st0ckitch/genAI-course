@@ -201,8 +201,8 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
       className="slide-content"
       style={backgroundStyle}
     >
-      {/* Add the logo component to every slide */}
-      <LogoComponent />
+      {/* Add the logo component only to first slides */}
+      {slideNumber === 1 && <LogoComponent />}
       
       <motion.div
         className="max-w-6xl mx-auto w-full overflow-y-auto max-h-[85vh]"
@@ -213,7 +213,8 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
         {title && (
           <motion.h1 
             variants={itemVariants}
-            className="text-3xl md:text-5xl font-bold mb-4 text-primary-700 dark:text-primary-400"
+            className="text-3xl md:text-5xl font-bold mb-4"
+            style={{ color: '#f97171' }} // Coral/salmon color like in the screenshot
           >
             {title}
           </motion.h1>
@@ -222,7 +223,7 @@ const Slide = ({ content, slideNumber, totalSlides }) => {
         {subtitle && (
           <motion.h2 
             variants={itemVariants}
-            className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300"
+            className="text-xl md:text-2xl mb-8 text-gray-600"
           >
             {subtitle}
           </motion.h2>
