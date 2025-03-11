@@ -7,15 +7,15 @@ const ModuleSelector = ({ currentModule, onModuleChange }) => {
       id: 1,
       title: "მოდული 1",
       subtitle: "LLM მოდელების საფუძვლები",
-      color: "bg-blue-600 hover:bg-blue-700",
-      activeColor: "bg-blue-700"
+      color: "bg-[#f97171] hover:bg-[#e56060]",
+      activeColor: "bg-[#e56060]"
     },
     {
       id: 2,
       title: "მოდული 2",
       subtitle: "AI ინსტრუმენტები პროდუქტიულობისთვის",
-      color: "bg-green-600 hover:bg-green-700",
-      activeColor: "bg-green-700"
+      color: "bg-[#f97171] hover:bg-[#e56060]",
+      activeColor: "bg-[#e56060]"
     }
   ];
 
