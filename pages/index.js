@@ -4,7 +4,8 @@ import Presentation from '../components/Presentation';
 import SplashScreen from '../components/SplashScreen';
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
+  // Set showSplash to false to completely skip the splash screen
+  const [showSplash, setShowSplash] = useState(false);
 
   const handleSplashComplete = () => {
     setShowSplash(false);
