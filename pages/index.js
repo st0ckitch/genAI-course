@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Presentation from '../components/Presentation';
 import SplashScreen from '../components/SplashScreen';
@@ -10,16 +10,8 @@ export default function Home() {
     setShowSplash(false);
   };
 
-  // Add a class to the body element for dark mode support
-  useEffect(() => {
-    const isDark = localStorage.getItem('darkMode') === 'true' || 
-                  window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    }
-    
-    // Force scrollbars to always be visible to prevent layout shifts
+  // Force scrollbars to always be visible to prevent layout shifts
+  React.useEffect(() => {
     document.body.style.overflowY = 'scroll';
     
     // Prevent body from scrolling while maintaining scrollable slides
