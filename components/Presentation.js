@@ -63,7 +63,10 @@ const Presentation = () => {
   };
   
   const handleModuleChange = (moduleId) => {
-    setCurrentModule(moduleId);
+    // Only allow changing to module 1 (module 2 is disabled)
+    if (moduleId === 1) {
+      setCurrentModule(moduleId);
+    }
   };
 
   useEffect(() => {
@@ -161,6 +164,9 @@ const Presentation = () => {
         </button>
       </div>
 
+      {/* Module Selector */}
+      <ModuleSelector currentModule={currentModule} onModuleChange={handleModuleChange} />
+
       {isMenuOpen && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -168,7 +174,7 @@ const Presentation = () => {
           exit={{ opacity: 0, y: -20 }}
           className="fixed top-20 right-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 z-50 w-72 max-h-96 overflow-y-auto"
         >
-          <h3 className="text-lg font-bold mb-3">Navigation</h3>
+          <h3 className="text-lg font-medium mb-3">Navigation</h3>
           
           {/* Module Selector inside menu */}
           <div className="mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">
@@ -185,12 +191,8 @@ const Presentation = () => {
                 Module 1: LLM Fundamentals
               </button>
               <button
-                onClick={() => handleModuleChange(2)}
-                className={`px-3 py-2 rounded flex-1 text-center text-sm ${
-                  currentModule === 2 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
+                disabled
+                className="px-3 py-2 rounded flex-1 text-center text-sm bg-gray-300 text-gray-500 cursor-not-allowed"
               >
                 Module 2: AI Tools
               </button>
