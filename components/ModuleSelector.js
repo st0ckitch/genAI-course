@@ -14,8 +14,8 @@ const ModuleSelector = ({ currentModule, onModuleChange }) => {
       id: 2,
       title: "მოდული 2",
       subtitle: "AI ინსტრუმენტები პროდუქტიულობისთვის",
-      color: "bg-[#f97171] hover:bg-[#e56060]",
-      activeColor: "bg-[#e56060]"
+      color: "bg-gray-300 text-gray-500 cursor-not-allowed",
+      activeColor: "bg-gray-400 text-gray-600 cursor-not-allowed"
     }
   ];
 
@@ -29,11 +29,11 @@ const ModuleSelector = ({ currentModule, onModuleChange }) => {
       {modules.map((module) => (
         <button
           key={module.id}
-          onClick={() => onModuleChange(module.id)}
+          onClick={() => module.id === 1 ? onModuleChange(module.id) : null}
           className={`flex flex-col items-center px-4 py-2 rounded-full transition-colors ${
             currentModule === module.id 
-              ? module.activeColor + ' text-white' 
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              ? module.activeColor
+              : module.color
           }`}
         >
           <span className="font-medium">{module.title}</span>
