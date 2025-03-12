@@ -10,6 +10,12 @@ module.exports = {
         sans: ['FiraGO', 'Inter', 'sans-serif'],
         mono: ['Fira Code', 'monospace'],
       },
+      fontWeight: {
+        light: 300,
+        normal: 400,
+        medium: 500,
+        bold: 700,
+      },
       colors: {
         primary: {
           50: '#f0f9ff',
